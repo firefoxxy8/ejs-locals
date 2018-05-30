@@ -85,10 +85,15 @@ ejs.renderFile = function(path, options, fn){
 	// New code.
 	// Uses Regex to catch all blocks, render them, save them in object, and clean them from html	
 	var blocks = {};
+	var filename = options.filename;
 	str = str.replace(BLOCK_REGEX,function(_,blockName,blockContent){
+	  // use different cache key
+        options.filename = filename + "?block_" + blockName;
 		blocks[blockName] = ejs.render(blockContent,options);
 		return '';
 	});
+	// restore cache key
+	options.filename = filename;
 	// return html and generated blocks
     fn(null, ejs.render(str, options),blocks);
   } catch (err) {
